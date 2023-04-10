@@ -69,4 +69,35 @@ public class CategoryController : Controller
 
         return View();
     }
+
+    public IActionResult Delete(int? id)
+    {
+        if (id is null or 0)
+        {
+            return NotFound();
+        }
+
+        Category? categoryFromDb = _db.Categories.FirstOrDefault(x => x.Id == id);
+        if (categoryFromDb is null)
+        {
+            return NotFound();
+        }
+
+        return View(categoryFromDb);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    public IActionResult DeletePost(int? id)
+    {
+        Category? category = _db.Categories.Find(id);
+        
+        if (category is null)
+        {
+            return NotFound();
+        }
+        
+        _db.Categories.Remove(category);
+        _db.SaveChanges();
+        return RedirectToAction("Index");
+    }
 }
