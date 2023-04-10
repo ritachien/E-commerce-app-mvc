@@ -40,4 +40,33 @@ public class CategoryController : Controller
 
         return View();
     }
+
+    public IActionResult Edit(int? id)
+    {
+        if (id is null or 0)
+        {
+            return NotFound();
+        }
+
+        var categoryFromDb = _db.Categories.FirstOrDefault(x => x.Id == id);
+        if (categoryFromDb is null)
+        {
+            return NotFound();
+        }
+
+        return View(categoryFromDb);
+    }
+
+    [HttpPost]
+    public IActionResult Edit(Category category)
+    {
+        if (ModelState.IsValid)
+        {
+            _db.Categories.Update(category);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        return View();
+    }
 }
